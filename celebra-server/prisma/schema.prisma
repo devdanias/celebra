@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // provider = "postgresql"
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id         Int         @id @default(autoincrement())
+  nome       String
+  email      String
+  senha      String
+  criadoEm   DateTime    @default(now()) @map("isoString")
+  casamentos Casamento[]
+  noivos     Noivo[]
+  convidados Convidado[]
+}
+
+model Casamento {
+  id            Int         @id @default(autoincrement())
+  criadoEm      DateTime    @default(now()) @map("isoString")
+  dataCasamento DateTime
+  local         String
+  orcamentos    Orcamento[]
+  convites      Convite[]
+  noivos        Noivo[]
+  organizador   Usuario     @relation(fields: [organizadorId], references: [id])
+  organizadorId Int
+}
+
+model Noivo {
+  id            Int        @id @default(autoincrement())
+  nome          String
+  cpf           String
+  rg            String
+  endereco      String
+  contato       String
+  criadoEm      DateTime   @default(now()) @map("isoString")
+  casamento     Casamento? @relation(fields: [casamentoId], references: [id])
+  casamentoId   Int?
+  organizador   Usuario    @relation(fields: [organizadorId], references: [id])
+  organizadorId Int
+}
+
+model Fornecedor {
+  id           Int         @id @default(autoincrement())
+  nomeFantasia String
+  cnpj         String
+  tipo         String
+  contato      String
+  criadoEm     DateTime    @default(now()) @map("isoString")
+  orcamentos   Orcamento[]
+  // decidir se fornecedor é público ou privado
+}
+
+model Orcamento {
+  id           Int        @id @default(autoincrement())
+  valor        Decimal    @default(0)
+  criadoEm     DateTime   @default(now()) @map("isoString")
+  casamento    Casamento  @relation(fields: [casamentoId], references: [id])
+  casamentoId  Int
+  fornecedor   Fornecedor @relation(fields: [fornecedorId], references: [id])
+  fornecedorId Int
+  parcelas     Parcela[]
+}
+
+model Parcela {
+  id          Int        @id @default(autoincrement())
+  orcamento   Orcamento? @relation(fields: [orcamentoId], references: [id])
+  orcamentoId Int?
+  vencimento  DateTime   @map("isoString")
+}
+
+model Convidado {
+  id            Int       @id @default(autoincrement())
+  nome          String
+  contato       String
+  convites      Convite[]
+  criadoEm      DateTime  @default(now()) @map("isoString")
+  organizador   Usuario   @relation(fields: [organizadorId], references: [id])
+  organizadorId Int
+}
+
+model Convite {
+  id          Int       @id @default(autoincrement())
+  criadoEm    DateTime  @default(now()) @map("isoString")
+  status      String    @default("Confirmado")
+  casamento   Casamento @relation(fields: [casamentoId], references: [id])
+  casamentoId Int
+  convidado   Convidado @relation(fields: [convidadoId], references: [id])
+  convidadoId Int
+}
