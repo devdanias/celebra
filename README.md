@@ -1,7 +1,6 @@
 # Celebra  
 **Software Web de Organização de Casamentos** desenvolvido para cerimonialistas. O Celebra oferece interfaces simples e intuitivas, promovendo uma gestão eficiente e sem burocracias das etapas do evento.  
 
-![Visão do Sistema](https://github.com/user-attachments/assets/49dccf87-a296-4502-b141-bd7213998def)
 
 ## Link do Projeto
 Acesse o projeto no [celebra-client](https://celebra-client.vercel.app)
